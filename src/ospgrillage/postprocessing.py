@@ -111,7 +111,8 @@ class Envelope:
         self.elements = kwargs.get(
             "elements", None
         )  # specific elements to query/envelope
-        self.nodes = kwargs.get("nodes", None)  # specific nodes to query/envelope
+        # specific nodes to query/envelope
+        self.nodes = kwargs.get("nodes", None)
         self.component = kwargs.get(
             "load_effect", None
         )  # specific load effect to query
@@ -287,11 +288,10 @@ def plot_force(
         xx = [nodes[n]["coordinate"][0] for n in ele_node.values]
         yy = [nodes[n]["coordinate"][1] for n in ele_node.values]
         zz = [nodes[n]["coordinate"][2] for n in ele_node.values]
+        ecrd = np.array(list(zip(xx, yy, zz)))
         # use ops_vis module to get force distribution on element
-        s, al = opsv.section_force_distribution_3d(
-            ex=xx,
-            ey=yy,
-            ez=zz,
+        s, _, _ = opsv.section_force_distribution_3d(
+            ecrd=ecrd,
             pl=ele_components,  # TODO check inputs with opsv package
         )
 
@@ -464,7 +464,7 @@ class PostProcessor:
             x4=x[3],
             z4=z[3],
         )
-        if shape_function_type is "linear":
+        if shape_function_type == "linear":
             shape_func = self.shape_function_obj.linear_shape_function(
                 eta=eta, zeta=zeta
             )
